@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg3om3a8j0jcs"]
+
+[ext_resource type="Script" path="res://scenes/player/gun.gd" id="1_qh3xr"]
+[ext_resource type="Texture2D" uid="uid://j743mox44f28" path="res://assets/weapons/energy_pistol.png" id="2_ieyma"]
+
+[node name="Gun" type="Node2D"]
+position = Vector2(187, 154)
+script = ExtResource("1_qh3xr")
+
+[node name="GunSprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, 1)
+texture = ExtResource("2_ieyma")
+
+[node name="GunMarker" type="Marker2D" parent="GunSprite"]
+unique_name_in_owner = true
+position = Vector2(17, -1)
+scale = Vector2(2.5, 2.5)
+
+[node name="GunShootSpeedTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[connection signal="timeout" from="GunShootSpeedTimer" to="." method="_on_shoot_speed_timer_timeout"]
