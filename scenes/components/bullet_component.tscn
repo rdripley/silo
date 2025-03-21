@@ -1,15 +1,14 @@
 [gd_scene load_steps=4 format=3 uid="uid://bgkn6ew4op2d2"]
 
-[ext_resource type="Script" path="res://scenes/components/bullet_component.gd" id="1_5q1tj"]
+[ext_resource type="Script" uid="uid://c64uwsey1th00" path="res://scenes/components/bullet_component.gd" id="1_5q1tj"]
 [ext_resource type="Texture2D" uid="uid://c3yfqv7b3k4n4" path="res://assets/weapons/Blue Smooth Projectile.png" id="1_mqvw3"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v6nun"]
 radius = 3.0
 height = 14.0
 
-[node name="Bullet" type="Area2D"]
-collision_layer = 8
-collision_mask = 9
+[node name="Bullet" type="Area2D" groups=["Bullets"]]
+collision_layer = 16
 script = ExtResource("1_5q1tj")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -4,9 +4,9 @@ extends CharacterBody2D
 
 @export var knockback_power: int = 300
 
-var died = false
-const SPEED = 400.0
-const JUMP_VELOCITY = -400.0
+var died: bool = false
+const SPEED: float = 400.0
+const JUMP_VELOCITY: float = -400.0
 
 func _animations(a):
 	sprite_2d.animation = a
@@ -36,12 +36,10 @@ func _physics_process(delta: float) -> void:
 
 func is_dead() -> void:
 	died = true
-	print_debug(died)
 	if died == true:
 		queue_free()
 
 
 func _on_hurt_box_knockback(area: Area2D) -> void:
 	var damage_direction = area.global_position - sprite_2d.global_position
-	#print_debug(damage_direction)
 	knockback(damage_direction)

@@ -23,7 +23,6 @@ func _on_area_entered(area: Area2D) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	print(body.name)
 	var body_check = body.name.to_lower()
 	if body_check.contains("map"):
 		queue_free()

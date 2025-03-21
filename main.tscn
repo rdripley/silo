@@ -1,12 +1,14 @@
-[gd_scene load_steps=11 format=4 uid="uid://bojf7mrn71gwq"]
+[gd_scene load_steps=13 format=4 uid="uid://bojf7mrn71gwq"]
 
 [ext_resource type="Texture2D" uid="uid://cvhpjvm0t6p51" path="res://assets/world/Green.png" id="1_7yjmx"]
 [ext_resource type="Texture2D" uid="uid://d7v303uo5xx6" path="res://assets/world/Terrain (16x16).png" id="2_7tn5b"]
 [ext_resource type="PackedScene" uid="uid://gfbiiwln0xuq" path="res://scenes/player/main_character.tscn" id="3_gsgf5"]
 [ext_resource type="PackedScene" uid="uid://cbp1ah547noe7" path="res://scenes/enemies/enemy_spider_drone.tscn" id="5_cla81"]
+[ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="5_kek77"]
+[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="6_4c57u"]
 [ext_resource type="Texture2D" uid="uid://bpketdxarph0f" path="res://assets/health_bar/Black Health Bar.png" id="6_msbhr"]
 [ext_resource type="Texture2D" uid="uid://c3ovot32td7ba" path="res://assets/health_bar/Red Health Bar.png" id="7_lqe1p"]
-[ext_resource type="Script" path="res://scenes/player/player_health_bar.gd" id="8_i66yw"]
+[ext_resource type="Script" uid="uid://c81k13m0uoomi" path="res://scenes/player/player_health_bar.gd" id="8_i66yw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t16rr"]
 texture = ExtResource("2_7tn5b")
@@ -198,19 +200,56 @@ tile_map_data = PackedByteArray("AAAMABEAAAAGAAAAAAAMABIAAAAGAAEAAAAMABMAAAAGAAE
 tile_set = SubResource("TileSet_2pccm")
 
 [node name="EnemySpiderDrone" parent="Level 1 Node/Level 1 Map" instance=ExtResource("5_cla81")]
-position = Vector2(224, 263.667)
-collision_mask = 5
+position = Vector2(224, 1094)
+collision_mask = 1
+
+[node name="CollisionShape2D" parent="Level 1 Node/Level 1 Map/EnemySpiderDrone/EnemyHitbox" index="0"]
+position = Vector2(0, 0)
+
+[node name="EnemyHurtbox" parent="Level 1 Node/Level 1 Map/EnemySpiderDrone" index="3"]
+collision_layer = 16
+collision_mask = 17
+
+[node name="health_component" parent="Level 1 Node/Level 1 Map/EnemySpiderDrone" index="4"]
+health = 100.0
+
+[node name="EnemyHealthBar" parent="Level 1 Node/Level 1 Map/EnemySpiderDrone" index="6"]
+max_value = 100.0
+value = 100.0
 
 [node name="Player" parent="Level 1 Node" instance=ExtResource("3_gsgf5")]
 unique_name_in_owner = true
-position = Vector2(113.333, 336)
+position = Vector2(113.333, 1087)
+collision_mask = 5
 
 [node name="PlayerSprite" parent="Level 1 Node/Player" index="0"]
 animation = &"default"
 
 [node name="Gun" parent="Level 1 Node/Player/PlayerSprite" index="1"]
-position = Vector2(0, 6)
+position = Vector2(7.5, 9.5)
 scale = Vector2(1, 1)
+
+[node name="GunMarker" parent="Level 1 Node/Player/PlayerSprite/Gun/GunSprite" index="0"]
+position = Vector2(15, -0.5)
+
+[node name="Sprite2D" parent="Level 1 Node/Player/PlayerSprite/Gun" index="2"]
+position = Vector2(75.5, -6.5)
+
+[node name="health_component" type="Node" parent="Level 1 Node/Player" node_paths=PackedStringArray("hurt_box", "health_bar")]
+script = ExtResource("5_kek77")
+health = 100.0
+hurt_box = NodePath("../hurtBox")
+health_bar = NodePath("../../../CanvasLayer/PlayerHealthBar")
+metadata/_custom_type_script = "uid://dmggvj1pgxqwd"
+
+[node name="hurtBox" type="Node" parent="Level 1 Node/Player" node_paths=PackedStringArray("area2D")]
+script = ExtResource("6_4c57u")
+area2D = NodePath("../PlayerHurtbox")
+metadata/_custom_type_script = "uid://bvgrkmsq3wykq"
+
+[node name="Label" type="Label" parent="Level 1 Node/Player"]
+offset_right = 40.0
+offset_bottom = 23.0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Level 1 Node"]
 
@@ -236,6 +275,8 @@ script = ExtResource("8_i66yw")
 player = NodePath("../../Level 1 Node/Player")
 
 [connection signal="ready" from="Level 1 Node" to="Level 1 Node/Player/FollowCam" method="_on_level_1_node_ready" binds= ["Level 1 Node", 0]]
+[connection signal="died" from="Level 1 Node/Player/health_component" to="Level 1 Node/Player" method="_on_health_component_died"]
+[connection signal="knockback" from="Level 1 Node/Player/hurtBox" to="Level 1 Node/Player" method="_on_hurt_box_knockback"]
 
 [editable path="Level 1 Node/Level 1 Map/EnemySpiderDrone"]
 [editable path="Level 1 Node/Player"]

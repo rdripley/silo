@@ -9,7 +9,7 @@ const BULLET = preload("res://scenes/components/bullet_component.tscn")
 @onready var gun_sprite: Sprite2D = %GunSprite
 
 @onready var shoot_speed = gun_component.weapons_dict.Pistol.shoot_speed
-var canShoot = true
+var canShoot: bool = true
 var bulletDirection = Vector2(1,0)
 
 func _ready():

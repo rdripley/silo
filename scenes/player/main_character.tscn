@@ -1,14 +1,14 @@
 [gd_scene load_steps=44 format=3 uid="uid://gfbiiwln0xuq"]
 
 [ext_resource type="Texture2D" uid="uid://bb0em6uumoc60" path="res://assets/animations/Jump (32x32).png" id="1_3ro8r"]
-[ext_resource type="Script" path="res://scenes/player/main_character.gd" id="1_f0cd4"]
+[ext_resource type="Script" uid="uid://c0qd7pc53bexg" path="res://scenes/player/main_character.gd" id="1_f0cd4"]
 [ext_resource type="Texture2D" uid="uid://cjrxumrp3rlpd" path="res://assets/animations/Idle (32x32).png" id="2_fxtol"]
 [ext_resource type="Texture2D" uid="uid://iinrhtxyt3tt" path="res://assets/animations/Run (32x32).png" id="4_ra4ln"]
 [ext_resource type="Texture2D" uid="uid://nhkodp8aon8i" path="res://assets/jetPack_assets/Black Fuel Bar.png" id="5_32744"]
 [ext_resource type="Texture2D" uid="uid://c6osdpmp1wupy" path="res://assets/jetPack_assets/Jetpack.png" id="5_cqrd6"]
 [ext_resource type="Texture2D" uid="uid://bikk0rhg5ljr6" path="res://assets/jetPack_assets/Green Fuel Bar.png" id="6_xkcvd"]
 [ext_resource type="PackedScene" uid="uid://bg3om3a8j0jcs" path="res://scenes/player/gun.tscn" id="7_sbkl8"]
-[ext_resource type="Script" path="res://scenes/player/follow_cam.gd" id="10_tft1s"]
+[ext_resource type="Script" uid="uid://j6j62ssymkyx" path="res://scenes/player/follow_cam.gd" id="10_tft1s"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e5noq"]
 atlas = ExtResource("2_fxtol")
@@ -255,12 +255,11 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vkqab"]
 _data = {
-"RESET": SubResource("Animation_4rl1q"),
-"hit_flash": SubResource("Animation_wjffm")
+&"RESET": SubResource("Animation_4rl1q"),
+&"hit_flash": SubResource("Animation_wjffm")
 }
 
 [node name="Player" type="CharacterBody2D"]
-position = Vector2(126, 163)
 collision_layer = 2
 collision_mask = 15
 script = ExtResource("1_f0cd4")
@@ -268,7 +267,6 @@ script = ExtResource("1_f0cd4")
 [node name="PlayerSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 texture_filter = 1
-position = Vector2(-7.62939e-06, 0)
 sprite_frames = SubResource("SpriteFrames_033gq")
 animation = &"running"
 autoplay = "default"
@@ -285,16 +283,16 @@ unique_name_in_owner = true
 position = Vector2(-115.383, 200)
 emitting = false
 amount = 50
-process_material = SubResource("ParticleProcessMaterial_3ysfk")
 one_shot = true
+process_material = SubResource("ParticleProcessMaterial_3ysfk")
 
 [node name="Right Jetpack Nozzle" type="GPUParticles2D" parent="PlayerSprite/PlayerJetpack"]
 unique_name_in_owner = true
 position = Vector2(108.172, 200)
 emitting = false
 amount = 50
-process_material = SubResource("ParticleProcessMaterial_3ysfk")
 one_shot = true
+process_material = SubResource("ParticleProcessMaterial_3ysfk")
 
 [node name="Gun" parent="PlayerSprite" instance=ExtResource("7_sbkl8")]
 unique_name_in_owner = true
@@ -324,6 +322,7 @@ limit_top = 0
 script = ExtResource("10_tft1s")
 
 [node name="PlayerHurtbox" type="Area2D" parent="."]
+unique_name_in_owner = true
 collision_layer = 0
 collision_mask = 8
 
@@ -334,13 +333,11 @@ shape = SubResource("RectangleShape2D_0i5t5")
 [node name="HitFlash" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
 libraries = {
-"": SubResource("AnimationLibrary_vkqab")
+&"": SubResource("AnimationLibrary_vkqab")
 }
 
 [node name="HurtTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
-
-[connection signal="area_entered" from="PlayerHurtbox" to="." method="_on_hurtbox_area_entered"]
 
 [editable path="PlayerSprite/Gun"]
