@@ -40,11 +40,10 @@ func _shoot():
 		canShoot = false
 		shoot_speed_timer.start()
 		current_bullet_count = current_bullet_count - 1
-		print_debug(current_bullet_count)
+
 		if current_bullet_count == 0:
 			_reload()
 
-		
 		var bulletNode = BULLET.instantiate()
 		
 		bulletNode.set_direction(bulletDirection)
