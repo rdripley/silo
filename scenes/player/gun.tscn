@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bg3om3a8j0jcs"]
+[gd_scene load_steps=5 format=3 uid="uid://bg3om3a8j0jcs"]
 
 [ext_resource type="Script" uid="uid://cq7pm4yo5y5ks" path="res://scenes/player/gun.gd" id="1_qh3xr"]
 [ext_resource type="Texture2D" uid="uid://j743mox44f28" path="res://assets/weapons/energy_pistol.png" id="2_ieyma"]
 [ext_resource type="Texture2D" uid="uid://bs8sr7kmmhcsr" path="res://assets/weapons/crosshairs.png" id="3_xf7jr"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_xf7jr"]
+load_path = "res://.godot/imported/reload_bar_under.png-f5a4f32c3e7d0f3eed610a294ca1fe75.ctex"
 
 [node name="Gun" type="Node2D"]
 script = ExtResource("1_qh3xr")
@@ -19,5 +22,13 @@ unique_name_in_owner = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_xf7jr")
+
+[node name="ReloadBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 40.0
+value = 100.0
+fill_mode = 1
+texture_progress = SubResource("CompressedTexture2D_xf7jr")
 
 [connection signal="timeout" from="GunShootSpeedTimer" to="." method="_on_shoot_speed_timer_timeout"]

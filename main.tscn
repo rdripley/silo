@@ -1,11 +1,13 @@
-[gd_scene load_steps=13 format=4 uid="uid://bojf7mrn71gwq"]
+[gd_scene load_steps=15 format=4 uid="uid://bojf7mrn71gwq"]
 
 [ext_resource type="Texture2D" uid="uid://cvhpjvm0t6p51" path="res://assets/world/Green.png" id="1_7yjmx"]
 [ext_resource type="Texture2D" uid="uid://d7v303uo5xx6" path="res://assets/world/Terrain (16x16).png" id="2_7tn5b"]
 [ext_resource type="PackedScene" uid="uid://gfbiiwln0xuq" path="res://scenes/player/main_character.tscn" id="3_gsgf5"]
 [ext_resource type="PackedScene" uid="uid://cbp1ah547noe7" path="res://scenes/enemies/enemy_spider_drone.tscn" id="5_cla81"]
+[ext_resource type="Texture2D" uid="uid://bk2flr738s1nk" path="res://assets/weapons/reload_bar_over.png" id="5_efxa6"]
 [ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="5_kek77"]
 [ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="6_4c57u"]
+[ext_resource type="Texture2D" uid="uid://ccwmqea00y3y7" path="res://assets/weapons/reload_bar_progress.png" id="6_dg77c"]
 [ext_resource type="Texture2D" uid="uid://bpketdxarph0f" path="res://assets/health_bar/Black Health Bar.png" id="6_msbhr"]
 [ext_resource type="Texture2D" uid="uid://c3ovot32td7ba" path="res://assets/health_bar/Red Health Bar.png" id="7_lqe1p"]
 [ext_resource type="Script" uid="uid://c81k13m0uoomi" path="res://scenes/player/player_health_bar.gd" id="8_i66yw"]
@@ -235,6 +237,15 @@ position = Vector2(15, -0.5)
 [node name="Sprite2D" parent="Level 1 Node/Player/PlayerSprite/Gun" index="2"]
 position = Vector2(75.5, -6.5)
 
+[node name="ReloadBar" parent="Level 1 Node/Player/PlayerSprite/Gun" index="3"]
+offset_left = -29.333
+offset_top = -30.0
+offset_right = 20.667
+offset_bottom = -21.0
+nine_patch_stretch = true
+texture_over = ExtResource("5_efxa6")
+texture_progress = ExtResource("6_dg77c")
+
 [node name="health_component" type="Node" parent="Level 1 Node/Player" node_paths=PackedStringArray("hurt_box", "health_bar")]
 script = ExtResource("5_kek77")
 health = 100.0
@@ -246,10 +257,6 @@ metadata/_custom_type_script = "uid://dmggvj1pgxqwd"
 script = ExtResource("6_4c57u")
 area2D = NodePath("../PlayerHurtbox")
 metadata/_custom_type_script = "uid://bvgrkmsq3wykq"
-
-[node name="Label" type="Label" parent="Level 1 Node/Player"]
-offset_right = 40.0
-offset_bottom = 23.0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="Level 1 Node"]
 
@@ -263,9 +270,9 @@ transform = Transform2D(3, 0, 0, 3, 0, 0)
 
 [node name="PlayerHealthBar" type="TextureProgressBar" parent="CanvasLayer" node_paths=PackedStringArray("player")]
 unique_name_in_owner = true
-offset_left = 10.6667
+offset_left = 11.0
 offset_top = 26.0
-offset_right = 59.6667
+offset_right = 60.0
 offset_bottom = 37.0
 value = 100.0
 nine_patch_stretch = true

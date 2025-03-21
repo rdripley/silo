@@ -4,7 +4,7 @@ var weapons_dict = {
 # pistol attributes
 	"Pistol": { 
 	"shoot_speed": 3.0,
-	"reload_speed": 3.0,
+	"reload_speed": 33.0,
 	"bullet_speed": 600, 
 	"damage": 15,
 	"num_bullets": 17,
