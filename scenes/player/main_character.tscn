@@ -294,6 +294,10 @@ amount = 50
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_3ysfk")
 
+[node name="JetpackRefuelTimer" type="Timer" parent="PlayerSprite/PlayerJetpack"]
+unique_name_in_owner = true
+one_shot = true
+
 [node name="Gun" parent="PlayerSprite" instance=ExtResource("7_sbkl8")]
 unique_name_in_owner = true
 position = Vector2(0, 10)

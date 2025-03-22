@@ -9,7 +9,10 @@ class_name Player
 @onready var gun = %Gun
 @onready var player_health_bar = %PlayerHealthBar
 @onready var hit_flash_anim_player = %HitFlash
+@onready var jetpack_reful_anim_player = %JetpackEmptyAnim
 @onready var hurt_timer = %HurtTimer
+@onready var refuel_timer = %JetpackRefuelTimer
+
 
 # Player movement
 @export var speed: float = 400.0
@@ -22,9 +25,11 @@ var is_hurt: bool = false
 # Jetpack attributes
 const jetpack_velocity: float = -500.0
 var fuel: float = 100.0
-var maximum_fuel = fuel
-var minimum_fuel = 0
+var maximum_fuel: float = fuel
+var minimum_fuel: float = 0
 var fuel_empty: bool = false
+var can_refuel: bool = true
+var wait_to_refuel: bool = false
 
 # Set thumbstick direction
 var thumb_stick_direction = Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X),Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
@@ -54,22 +59,35 @@ func _jetPack():
 
 		if fuel_bar.value == 0:
 			fuel_empty = true
+			can_refuel = false
 			
 	#Refuel JetPack logic
-	if (fuel > 1 and fuel < 50) and not is_on_floor():
-		fuel = fuel + .02
-		if (fuel > maximum_fuel):
-			fuel = maximum_fuel
-		fuel_bar.value = fuel
+	if can_refuel == true:
+		if (fuel > 1 and fuel < 50) and not is_on_floor():
+			fuel = fuel + .02
+			if (fuel > maximum_fuel):
+				fuel = maximum_fuel
+			fuel_bar.value = fuel
+		else:
+			fuel_empty = false
+		
+		if is_on_floor() and fuel < maximum_fuel:
+			fuel = fuel + 1
+			if (fuel > maximum_fuel):
+				fuel = maximum_fuel
+			fuel_bar.value = fuel
+			fuel_empty = false
 	else:
-		fuel_empty = false
-	
-	if is_on_floor() and fuel < maximum_fuel:
-		fuel = fuel + 1
-		if (fuel > maximum_fuel):
-			fuel = maximum_fuel
-		fuel_bar.value = fuel
-		fuel_empty = false
+		if wait_to_refuel: return
+		wait_to_refuel = true
+		jetpack_reful_anim_player.play("jetpack_empty")
+		refuel_timer.start()
+		await refuel_timer.timeout
+		jetpack_reful_anim_player.stop()
+		jetpack_reful_anim_player.play("RESET")
+		wait_to_refuel = false
+		can_refuel = true
+		
 
 # handle gun direction and actions
 func _handle_gun(gun_direction, gun_facing_left):
