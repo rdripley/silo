@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://gfbiiwln0xuq"]
+[gd_scene load_steps=51 format=3 uid="uid://gfbiiwln0xuq"]
 
 [ext_resource type="Texture2D" uid="uid://bb0em6uumoc60" path="res://assets/animations/Jump (32x32).png" id="1_3ro8r"]
 [ext_resource type="Script" uid="uid://c0qd7pc53bexg" path="res://scenes/player/main_character.gd" id="1_f0cd4"]
@@ -7,8 +7,12 @@
 [ext_resource type="Texture2D" uid="uid://nhkodp8aon8i" path="res://assets/jetPack_assets/Black Fuel Bar.png" id="5_32744"]
 [ext_resource type="Texture2D" uid="uid://c6osdpmp1wupy" path="res://assets/jetPack_assets/Jetpack.png" id="5_cqrd6"]
 [ext_resource type="Texture2D" uid="uid://bikk0rhg5ljr6" path="res://assets/jetPack_assets/Green Fuel Bar.png" id="6_xkcvd"]
+[ext_resource type="Texture2D" uid="uid://bq2ppabrfqo3k" path="res://assets/jetPack_assets/jetpack_fuel_bar_over_2.png" id="7_j33pw"]
 [ext_resource type="PackedScene" uid="uid://bg3om3a8j0jcs" path="res://scenes/player/gun.tscn" id="7_sbkl8"]
+[ext_resource type="Texture2D" uid="uid://c8c3parlh5gmv" path="res://assets/jetPack_assets/jetpack_fuel_bar_over_1.png" id="8_ef5tu"]
+[ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="10_55fil"]
 [ext_resource type="Script" uid="uid://j6j62ssymkyx" path="res://scenes/player/follow_cam.gd" id="10_tft1s"]
+[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="11_ex3f7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e5noq"]
 atlas = ExtResource("2_fxtol")
@@ -214,6 +218,45 @@ scale_max = 37.39
 scale_curve = SubResource("CurveTexture_hq3xt")
 color_ramp = SubResource("GradientTexture1D_bvab4")
 
+[sub_resource type="Animation" id="Animation_vivmo"]
+length = 0.001
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%JetPackFuelBar:texture_over")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [null]
+}
+
+[sub_resource type="Animation" id="Animation_2cqfq"]
+resource_name = "new_animation"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%JetPackFuelBar:texture_over")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [ExtResource("7_j33pw"), ExtResource("8_ef5tu")]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yaehf"]
+_data = {
+&"RESET": SubResource("Animation_vivmo"),
+&"jetpack_empty": SubResource("Animation_2cqfq")
+}
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c8qxn"]
 size = Vector2(22, 24)
 
@@ -306,6 +349,12 @@ scale = Vector2(0.5, 0.5)
 [node name="GunSprite" parent="PlayerSprite/Gun" index="0"]
 position = Vector2(-1, -5)
 
+[node name="JetpackEmptyAnim" type="AnimationPlayer" parent="PlayerSprite"]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_yaehf")
+}
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_c8qxn")
@@ -343,5 +392,19 @@ libraries = {
 [node name="HurtTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
+
+[node name="health_component" type="Node" parent="." node_paths=PackedStringArray("hurt_box")]
+script = ExtResource("10_55fil")
+health = 100.0
+hurt_box = NodePath("../hurtBox")
+metadata/_custom_type_script = "uid://dmggvj1pgxqwd"
+
+[node name="hurtBox" type="Node" parent="." node_paths=PackedStringArray("area2D")]
+script = ExtResource("11_ex3f7")
+area2D = NodePath("../PlayerHurtbox")
+metadata/_custom_type_script = "uid://bvgrkmsq3wykq"
+
+[connection signal="died" from="health_component" to="." method="_on_health_component_died"]
+[connection signal="knockback" from="hurtBox" to="." method="_on_hurt_box_knockback"]
 
 [editable path="PlayerSprite/Gun"]

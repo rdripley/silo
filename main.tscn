@@ -1,16 +1,12 @@
-[gd_scene load_steps=20 format=4 uid="uid://bojf7mrn71gwq"]
+[gd_scene load_steps=13 format=4 uid="uid://bojf7mrn71gwq"]
 
 [ext_resource type="Texture2D" uid="uid://cvhpjvm0t6p51" path="res://assets/world/Green.png" id="1_7yjmx"]
 [ext_resource type="Texture2D" uid="uid://d7v303uo5xx6" path="res://assets/world/Terrain (16x16).png" id="2_7tn5b"]
 [ext_resource type="PackedScene" uid="uid://gfbiiwln0xuq" path="res://scenes/player/main_character.tscn" id="3_gsgf5"]
 [ext_resource type="PackedScene" uid="uid://cbp1ah547noe7" path="res://scenes/enemies/enemy_spider_drone.tscn" id="5_cla81"]
 [ext_resource type="Texture2D" uid="uid://bk2flr738s1nk" path="res://assets/weapons/reload_bar_over.png" id="5_efxa6"]
-[ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="5_kek77"]
-[ext_resource type="Texture2D" uid="uid://bq2ppabrfqo3k" path="res://assets/jetPack_assets/jetpack_fuel_bar_over_2.png" id="5_ycdy4"]
-[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="6_4c57u"]
 [ext_resource type="Texture2D" uid="uid://ccwmqea00y3y7" path="res://assets/weapons/reload_bar_progress.png" id="6_dg77c"]
 [ext_resource type="Texture2D" uid="uid://bpketdxarph0f" path="res://assets/health_bar/Black Health Bar.png" id="6_msbhr"]
-[ext_resource type="Texture2D" uid="uid://c8c3parlh5gmv" path="res://assets/jetPack_assets/jetpack_fuel_bar_over_1.png" id="6_w48qg"]
 [ext_resource type="Texture2D" uid="uid://c3ovot32td7ba" path="res://assets/health_bar/Red Health Bar.png" id="7_lqe1p"]
 [ext_resource type="Script" uid="uid://c81k13m0uoomi" path="res://scenes/player/player_health_bar.gd" id="8_i66yw"]
 
@@ -175,45 +171,6 @@ physics_layer_0/collision_layer = 7
 physics_layer_0/collision_mask = 7
 sources/0 = SubResource("TileSetAtlasSource_t16rr")
 
-[sub_resource type="Animation" id="Animation_vivmo"]
-length = 0.001
-step = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("%JetPackFuelBar:texture_over")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [null]
-}
-
-[sub_resource type="Animation" id="Animation_2cqfq"]
-resource_name = "new_animation"
-length = 0.4
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("%JetPackFuelBar:texture_over")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [ExtResource("5_ycdy4"), ExtResource("6_w48qg")]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_yaehf"]
-_data = {
-&"RESET": SubResource("Animation_vivmo"),
-&"jetpack_empty": SubResource("Animation_2cqfq")
-}
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qaaye"]
 size = Vector2(3131, 49)
 
@@ -260,6 +217,12 @@ health = 100.0
 max_value = 100.0
 value = 100.0
 
+[node name="StaticBody2D" type="StaticBody2D" parent="Level 1 Node"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Level 1 Node/StaticBody2D"]
+position = Vector2(1565.67, 25.6667)
+shape = SubResource("RectangleShape2D_qaaye")
+
 [node name="Player" parent="Level 1 Node" instance=ExtResource("3_gsgf5")]
 unique_name_in_owner = true
 position = Vector2(113.333, 1087)
@@ -267,12 +230,6 @@ collision_mask = 5
 
 [node name="PlayerSprite" parent="Level 1 Node/Player" index="0"]
 animation = &"default"
-
-[node name="JetpackEmptyAnim" type="AnimationPlayer" parent="Level 1 Node/Player/PlayerSprite/PlayerJetpack" index="3"]
-unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_yaehf")
-}
 
 [node name="Gun" parent="Level 1 Node/Player/PlayerSprite" index="1"]
 position = Vector2(7.5, 9.5)
@@ -299,23 +256,8 @@ offset_top = -20.5
 offset_right = 19.167
 offset_bottom = 11.5
 
-[node name="health_component" type="Node" parent="Level 1 Node/Player" node_paths=PackedStringArray("hurt_box", "health_bar")]
-script = ExtResource("5_kek77")
-health = 100.0
-hurt_box = NodePath("../hurtBox")
+[node name="health_component" parent="Level 1 Node/Player" index="7" node_paths=PackedStringArray("health_bar")]
 health_bar = NodePath("../../../CanvasLayer/PlayerHealthBar")
-metadata/_custom_type_script = "uid://dmggvj1pgxqwd"
-
-[node name="hurtBox" type="Node" parent="Level 1 Node/Player" node_paths=PackedStringArray("area2D")]
-script = ExtResource("6_4c57u")
-area2D = NodePath("../PlayerHurtbox")
-metadata/_custom_type_script = "uid://bvgrkmsq3wykq"
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Level 1 Node"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Level 1 Node/StaticBody2D"]
-position = Vector2(1565.67, 25.6667)
-shape = SubResource("RectangleShape2D_qaaye")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 scale = Vector2(3, 3)
@@ -335,8 +277,6 @@ script = ExtResource("8_i66yw")
 player = NodePath("../../Level 1 Node/Player")
 
 [connection signal="ready" from="Level 1 Node" to="Level 1 Node/Player/FollowCam" method="_on_level_1_node_ready" binds= ["Level 1 Node", 0]]
-[connection signal="died" from="Level 1 Node/Player/health_component" to="Level 1 Node/Player" method="_on_health_component_died"]
-[connection signal="knockback" from="Level 1 Node/Player/hurtBox" to="Level 1 Node/Player" method="_on_hurt_box_knockback"]
 
 [editable path="Level 1 Node/Level 1 Map/EnemySpiderDrone"]
 [editable path="Level 1 Node/Player"]
