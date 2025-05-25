@@ -1,7 +1,8 @@
-[gd_scene load_steps=51 format=3 uid="uid://gfbiiwln0xuq"]
+[gd_scene load_steps=58 format=3 uid="uid://gfbiiwln0xuq"]
 
 [ext_resource type="Texture2D" uid="uid://bb0em6uumoc60" path="res://assets/animations/Jump (32x32).png" id="1_3ro8r"]
 [ext_resource type="Script" uid="uid://c0qd7pc53bexg" path="res://scenes/player/main_character.gd" id="1_f0cd4"]
+[ext_resource type="Texture2D" uid="uid://b2haqr33hu663" path="res://assets/animations/Double Jump (32x32).png" id="2_ef5tu"]
 [ext_resource type="Texture2D" uid="uid://cjrxumrp3rlpd" path="res://assets/animations/Idle (32x32).png" id="2_fxtol"]
 [ext_resource type="Texture2D" uid="uid://iinrhtxyt3tt" path="res://assets/animations/Run (32x32).png" id="4_ra4ln"]
 [ext_resource type="Texture2D" uid="uid://nhkodp8aon8i" path="res://assets/jetPack_assets/Black Fuel Bar.png" id="5_32744"]
@@ -13,6 +14,30 @@
 [ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="10_55fil"]
 [ext_resource type="Script" uid="uid://j6j62ssymkyx" path="res://scenes/player/follow_cam.gd" id="10_tft1s"]
 [ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="11_ex3f7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_12w03"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e6twp"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pxd0v"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k4mop"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fyudl"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rw20p"]
+atlas = ExtResource("2_ef5tu")
+region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e5noq"]
 atlas = ExtResource("2_fxtol")
@@ -108,6 +133,29 @@ region = Rect2(352, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_033gq"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_12w03")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e6twp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pxd0v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k4mop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fyudl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rw20p")
+}],
+"loop": false,
+"name": &"death",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e5noq")
@@ -302,7 +350,7 @@ _data = {
 &"hit_flash": SubResource("Animation_wjffm")
 }
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
 collision_mask = 15
 script = ExtResource("1_f0cd4")
@@ -311,7 +359,6 @@ script = ExtResource("1_f0cd4")
 unique_name_in_owner = true
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_033gq")
-animation = &"running"
 autoplay = "default"
 
 [node name="PlayerJetpack" type="Sprite2D" parent="PlayerSprite"]
@@ -379,7 +426,8 @@ unique_name_in_owner = true
 collision_layer = 0
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerHurtbox"]
+[node name="PlayerCollisionShape" type="CollisionShape2D" parent="PlayerHurtbox"]
+unique_name_in_owner = true
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_0i5t5")
 
@@ -390,6 +438,11 @@ libraries = {
 }
 
 [node name="HurtTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.5
+one_shot = true
+
+[node name="PlayerRespawnTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
 

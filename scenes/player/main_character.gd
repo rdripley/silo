@@ -1,45 +1,51 @@
 extends CharacterBody2D
 class_name Player
 
+signal player_respawned()
+
 # Imported Objects
-@onready var sprite_2d: AnimatedSprite2D = %PlayerSprite
+@onready var player_sprite: AnimatedSprite2D = %PlayerSprite
 @onready var fuel_bar: TextureProgressBar = %JetPackFuelBar
 @onready var jetpack_animation_left: GPUParticles2D = %"Left Jetpack Nozzle"
 @onready var jetpack_animation_right: GPUParticles2D = %"Right Jetpack Nozzle"
-@onready var gun = %Gun
-@onready var player_health_bar = %PlayerHealthBar
-@onready var hit_flash_anim_player = %HitFlash
-@onready var jetpack_reful_anim_player = %JetpackEmptyAnim
-@onready var hurt_timer = %HurtTimer
-@onready var refuel_timer = %JetpackRefuelTimer
+@onready var gun: Node2D = %Gun
+@onready var player_health_bar: TextureProgressBar = %PlayerHealthBar
+@onready var hit_flash_anim_player: AnimationPlayer = %HitFlash
+@onready var jetpack_reful_anim_player: AnimationPlayer = %JetpackEmptyAnim
+@onready var hurt_timer: Timer = %HurtTimer
+@onready var refuel_timer: Timer = %JetpackRefuelTimer
+@onready var respawn_timer: Timer = %PlayerRespawnTimer
 
 
-# Player movement
+# Player
 @export var speed: float = 400.0
 @export var jump_velocity: float = -400.0
-@export var knockback_power: int = 500
+@export var knockback_power: float = 700.0
 var default_direction = Vector2.RIGHT
 var is_left: bool = false
 var is_hurt: bool = false
+var is_dead: bool = false
+var player_direction: float
 
 # Jetpack attributes
-const jetpack_velocity: float = -500.0
+const jetpack_velocity: float = -650.0
 var fuel: float = 100.0
 var maximum_fuel: float = fuel
 var minimum_fuel: float = 0
 var fuel_empty: bool = false
 var can_refuel: bool = true
 var wait_to_refuel: bool = false
+var is_knockedback: bool = false
 
 # Set thumbstick direction
 var thumb_stick_direction = Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X),Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
 
 # animations
 func _animations(a):
-	sprite_2d.animation = a
+	player_sprite.animation = a
 
 # jetpack functionality
-func _jetPack():
+func _jetPack(jetpack_direction):
 	#Toggle Visibility of Fuel Bar
 	if maximum_fuel == fuel:
 		fuel_bar.visible = false;
@@ -52,6 +58,12 @@ func _jetPack():
 			jetpack_animation_left.emitting = true
 			jetpack_animation_right.emitting = true
 			velocity.y = jetpack_velocity
+
+			if jetpack_direction:
+				velocity.x = (jetpack_direction * -1) * jetpack_velocity
+			else:
+				velocity.x = move_toward(velocity.x, 0, 50)
+			
 			fuel = fuel - 1
 			if (fuel < 0):
 				fuel = minimum_fuel
@@ -99,17 +111,39 @@ func _handle_gun(gun_direction, gun_facing_left):
 
 
 func knockback(enemyVelocity: Vector2):
-	var knockback_direction = (enemyVelocity - velocity).normalized() * knockback_power
+	var knockback_direction
+	if enemyVelocity != Vector2(0.0,0.0) && velocity != Vector2(0.0, 0.0):
+		knockback_direction = (enemyVelocity - velocity).normalized() * knockback_power
+	elif enemyVelocity == Vector2(0.0,0.0) && velocity != Vector2(0.0, 0.0):
+		enemyVelocity = velocity * -1
+		knockback_direction = (enemyVelocity - velocity).normalized() * knockback_power
+	else:
+		enemyVelocity = Vector2(knockback_power, knockback_power) * -1
+		knockback_direction = (enemyVelocity - velocity).normalized() * knockback_power
 	velocity = knockback_direction
 	move_and_slide()
 	
 # handle all player movement
-func _player_movement():
+func _player_movement(player_delta):
+	# Add the gravity.
+	if not is_on_floor():
+			velocity += get_gravity() * player_delta
+			
+	if is_dead == false:
+		#Animations
+		if (velocity.x > 1 || velocity.x < -1):
+			_animations("running")
+		else:
+			_animations("default")
+		
+		if not is_on_floor():
+			_animations("jumping")
+	
 	# Get the input direction and handle the movement/deceleration.
-	var direction := Input.get_axis("left", "right")
-
-	if direction:
-		velocity.x = direction * speed
+	player_direction = Input.get_axis("left", "right")
+	
+	if player_direction && is_knockedback == false:
+		velocity.x = player_direction * speed
 	else:
 		velocity.x = move_toward(velocity.x, 0, 50)
 		
@@ -119,12 +153,12 @@ func _player_movement():
 
 	# get thumbstick direction
 	thumb_stick_direction = Vector2(Input.get_joy_axis(0, JOY_AXIS_RIGHT_X),Input.get_joy_axis(0, JOY_AXIS_RIGHT_Y))
-
+	
 	# Change Character & Weapon Direction
 	if Input.is_action_pressed("left"):
 		default_direction = Vector2.LEFT
 		is_left = true
-		sprite_2d.flip_h = is_left
+		player_sprite.flip_h = is_left
 		if thumb_stick_direction == Vector2(0,0):
 			thumb_stick_direction = default_direction
 		elif thumb_stick_direction != Vector2(0,0):
@@ -135,7 +169,7 @@ func _player_movement():
 	elif Input.is_action_pressed("right"):
 		default_direction = Vector2.RIGHT
 		is_left = false
-		sprite_2d.flip_h = is_left
+		player_sprite.flip_h = is_left
 		if thumb_stick_direction == Vector2(0,0):
 			thumb_stick_direction = default_direction
 		elif thumb_stick_direction != Vector2(0,0):
@@ -153,37 +187,39 @@ func _player_movement():
 		else:
 			is_left = true
 		_handle_gun(thumb_stick_direction, is_left)
-
-func _physics_process(delta: float) -> void:
-	#Animations
-	if (velocity.x > 1 || velocity.x < -1):
-		_animations("running")
-	else:
-		_animations("default")
 		
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-		_animations("jumping")
-		
-	# player movement call
-	_player_movement()
 	# jetpack movement call
-	_jetPack()
-	
-	move_and_slide()
+	_jetPack(player_direction)
+
+# main physics process
+func _physics_process(delta: float) -> void:
+		# player movement call
+		_player_movement(delta)
+		
+		move_and_slide()
 
 func _on_health_component_died() -> void:
-	print_debug("dead")
+	is_dead = true
+	set_process_input(false)
+	_animations("death")
+	respawn_timer.start()
+	await respawn_timer.timeout
+	player_respawned.emit()
+	velocity = Vector2.ZERO
+	is_dead = false
+	set_process_input(true)
+	_animations("default")
 
 
 func _on_hurt_box_knockback(area: Area2D) -> void:
 	if is_hurt: return
 	is_hurt = true
+	is_knockedback = true
 	knockback(area.get_parent().velocity)
 	hit_flash_anim_player.play("hit_flash")
 	hurt_timer.start()
 	await hurt_timer.timeout
+	is_knockedback = false
 	hit_flash_anim_player.stop()
-	sprite_2d.modulate = Color.WHITE
+	player_sprite.modulate = Color.WHITE
 	is_hurt = false

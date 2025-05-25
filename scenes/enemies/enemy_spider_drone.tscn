@@ -1,13 +1,38 @@
-[gd_scene load_steps=28 format=3 uid="uid://cbp1ah547noe7"]
+[gd_scene load_steps=35 format=3 uid="uid://cbp1ah547noe7"]
 
 [ext_resource type="Texture2D" uid="uid://bc5reqfyp775o" path="res://assets/animations/Mini Spider Drone (Idle).png" id="1_87ply"]
 [ext_resource type="Script" uid="uid://dd73xl3fxnnk6" path="res://scenes/enemies/enemy_spider_drone.gd" id="1_u1j2r"]
 [ext_resource type="Texture2D" uid="uid://3yhjveomuplt" path="res://assets/animations/Mini Spider Drone (Jumping).png" id="2_bgrd0"]
+[ext_resource type="Texture2D" uid="uid://cs8fpwr38rqno" path="res://assets/animations/Mini Spider Drone (Dying).png" id="2_kvswj"]
 [ext_resource type="Texture2D" uid="uid://u8nkn0x5vaty" path="res://assets/animations/Mini Spider Drone (Running).png" id="3_pfw7c"]
 [ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="5_ics44"]
 [ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="6_o63kh"]
 [ext_resource type="Texture2D" uid="uid://nhkodp8aon8i" path="res://assets/jetPack_assets/Black Fuel Bar.png" id="7_doh6e"]
 [ext_resource type="Texture2D" uid="uid://bikk0rhg5ljr6" path="res://assets/jetPack_assets/Green Fuel Bar.png" id="8_sq2t8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_04xoj"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntm4k"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_88gp6"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qq2qy"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_13pdy"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uqy0w"]
+atlas = ExtResource("2_kvswj")
+region = Rect2(160, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gfrs6"]
 atlas = ExtResource("1_87ply")
@@ -71,6 +96,29 @@ region = Rect2(192, 0, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_q0w8u"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_04xoj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ntm4k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_88gp6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qq2qy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_13pdy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uqy0w")
+}],
+"loop": false,
+"name": &"Dying",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gfrs6")
@@ -141,7 +189,7 @@ size = Vector2(18, 32)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vd73y"]
 size = Vector2(32, 19)
 
-[node name="EnemySpiderDrone" type="CharacterBody2D"]
+[node name="EnemySpiderDrone" type="CharacterBody2D" groups=["Enemy"]]
 collision_layer = 4
 collision_mask = 4
 script = ExtResource("1_u1j2r")
@@ -149,9 +197,10 @@ script = ExtResource("1_u1j2r")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_q0w8u")
-animation = &"running"
+animation = &"Dying"
 autoplay = "default"
-frame_progress = 0.103216
+frame = 5
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.00349005, -1.23382e-05)
@@ -175,7 +224,6 @@ shape = SubResource("RectangleShape2D_vd73y")
 
 [node name="health_component" type="Node" parent="." node_paths=PackedStringArray("hurt_box", "health_bar")]
 script = ExtResource("5_ics44")
-health = 30
 hurt_box = NodePath("../hurtBox")
 health_bar = NodePath("../EnemyHealthBar")
 
@@ -193,6 +241,11 @@ max_value = 30.0
 value = 30.0
 texture_under = ExtResource("7_doh6e")
 texture_progress = ExtResource("8_sq2t8")
+
+[node name="EnemyRespawnTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 5.0
+one_shot = true
 
 [connection signal="died" from="health_component" to="." method="is_dead"]
 [connection signal="knockback" from="hurtBox" to="." method="_on_hurt_box_knockback"]

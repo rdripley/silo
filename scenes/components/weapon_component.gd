@@ -6,7 +6,7 @@ var weapons_dict = {
 	"shoot_speed": 3.0,
 	"reload_speed": 33.0,
 	"bullet_speed": 600, 
-	"damage": 15,
+	"damage": 100,
 	"num_bullets": 17,
 	"weapon_texture": "res://assets/weapons/energy_pistol.png" },
 # shotgun attributes

@@ -1,6 +1,9 @@
 extends CharacterBody2D
 
+signal enemy_respawned()
+
 @onready var sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var respawn_timer: Timer = %EnemyRespawnTimer
 
 @export var knockback_power: int = 300
 
@@ -22,22 +25,28 @@ func knockback(enemyVelocity: Vector2):
 func _physics_process(delta: float) -> void:
 
 	#Animations
-	if (velocity.x > 1 || velocity.x < -1):
-		_animations("running")
-	else:
-		_animations("default")
-		
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-		_animations("jumping")
-		
-	move_and_slide()
+	if died == false:
+		if (velocity.x > 1 || velocity.x < -1):
+			_animations("running")
+		else:
+			_animations("default")
+			
+		# Add the gravity.
+		if not is_on_floor():
+			velocity += get_gravity() * delta
+			_animations("jumping")
+			
+		move_and_slide()
 
 func is_dead() -> void:
 	died = true
 	if died == true:
-		queue_free()
+		_animations("Dying")
+	respawn_timer.start()
+	await respawn_timer.timeout
+	enemy_respawned.emit()
+	died = false
+	velocity = Vector2.ZERO
 
 
 func _on_hurt_box_knockback(area: Area2D) -> void:

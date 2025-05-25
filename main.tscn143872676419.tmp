@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=4 uid="uid://bojf7mrn71gwq"]
+[gd_scene load_steps=13 format=4 uid="uid://bojf7mrn71gwq"]
 
 [ext_resource type="Texture2D" uid="uid://cvhpjvm0t6p51" path="res://assets/world/Green.png" id="1_7yjmx"]
-[ext_resource type="Script" uid="uid://dpro5gsu5axg8" path="res://scenes/components/spawner_component.gd" id="2_4c57u"]
 [ext_resource type="Texture2D" uid="uid://d7v303uo5xx6" path="res://assets/world/Terrain (16x16).png" id="2_7tn5b"]
 [ext_resource type="PackedScene" uid="uid://gfbiiwln0xuq" path="res://scenes/player/main_character.tscn" id="3_gsgf5"]
 [ext_resource type="PackedScene" uid="uid://cbp1ah547noe7" path="res://scenes/enemies/enemy_spider_drone.tscn" id="5_cla81"]
@@ -189,28 +188,6 @@ grow_vertical = 2
 texture = ExtResource("1_7yjmx")
 stretch_mode = 1
 
-[node name="Spawner" type="Node2D" parent="."]
-scale = Vector2(2, 2)
-script = ExtResource("2_4c57u")
-metadata/_custom_type_script = "uid://dpro5gsu5axg8"
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-scale = Vector2(3, 3)
-transform = Transform2D(3, 0, 0, 3, 0, 0)
-
-[node name="PlayerHealthBar" type="TextureProgressBar" parent="CanvasLayer" node_paths=PackedStringArray("player")]
-unique_name_in_owner = true
-offset_left = 11.0
-offset_top = 26.0
-offset_right = 60.0
-offset_bottom = 37.0
-value = 100.0
-nine_patch_stretch = true
-texture_under = ExtResource("6_msbhr")
-texture_progress = ExtResource("7_lqe1p")
-script = ExtResource("8_i66yw")
-player = NodePath("../../Level 1 Node/Player")
-
 [node name="Level 1 Node" type="Node2D" parent="."]
 texture_filter = 1
 scale = Vector2(2, 2)
@@ -240,14 +217,6 @@ health = 100.0
 max_value = 100.0
 value = 100.0
 
-[node name="PlayerRespawnLocation" type="Marker2D" parent="Level 1 Node"]
-unique_name_in_owner = true
-position = Vector2(113.333, 1087)
-
-[node name="EnemyRespawnLocation" type="Marker2D" parent="Level 1 Node"]
-unique_name_in_owner = true
-position = Vector2(224, 1094)
-
 [node name="StaticBody2D" type="StaticBody2D" parent="Level 1 Node"]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Level 1 Node/StaticBody2D"]
@@ -258,6 +227,9 @@ shape = SubResource("RectangleShape2D_qaaye")
 unique_name_in_owner = true
 position = Vector2(113.333, 1087)
 collision_mask = 5
+
+[node name="PlayerSprite" parent="Level 1 Node/Player" index="0"]
+animation = &"default"
 
 [node name="Gun" parent="Level 1 Node/Player/PlayerSprite" index="1"]
 position = Vector2(7.5, 9.5)
@@ -284,8 +256,30 @@ offset_top = -20.5
 offset_right = 19.167
 offset_bottom = 11.5
 
-[node name="health_component" parent="Level 1 Node/Player" index="8" node_paths=PackedStringArray("health_bar")]
+[node name="health_component" parent="Level 1 Node/Player" index="7" node_paths=PackedStringArray("health_bar")]
+health = 1000.0
 health_bar = NodePath("../../../CanvasLayer/PlayerHealthBar")
+
+[node name="Label" type="Label" parent="Level 1 Node/Player"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+scale = Vector2(3, 3)
+transform = Transform2D(3, 0, 0, 3, 0, 0)
+
+[node name="PlayerHealthBar" type="TextureProgressBar" parent="CanvasLayer" node_paths=PackedStringArray("player")]
+unique_name_in_owner = true
+offset_left = 11.0
+offset_top = 26.0
+offset_right = 60.0
+offset_bottom = 37.0
+value = 100.0
+nine_patch_stretch = true
+texture_under = ExtResource("6_msbhr")
+texture_progress = ExtResource("7_lqe1p")
+script = ExtResource("8_i66yw")
+player = NodePath("../../Level 1 Node/Player")
 
 [connection signal="ready" from="Level 1 Node" to="Level 1 Node/Player/FollowCam" method="_on_level_1_node_ready" binds= ["Level 1 Node", 0]]
 

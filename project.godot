@@ -29,6 +29,8 @@ project/assembly_name="Silo"
 
 Enemies=""
 Bullets=""
+Player=""
+Enemy=""
 
 [input]
 
