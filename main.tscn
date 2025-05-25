@@ -257,7 +257,6 @@ shape = SubResource("RectangleShape2D_qaaye")
 [node name="Player" parent="Level 1 Node" instance=ExtResource("3_gsgf5")]
 unique_name_in_owner = true
 position = Vector2(113.333, 1087)
-collision_mask = 5
 
 [node name="Gun" parent="Level 1 Node/Player/PlayerSprite" index="1"]
 position = Vector2(7.5, 9.5)

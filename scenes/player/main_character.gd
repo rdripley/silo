@@ -15,6 +15,9 @@ signal player_respawned()
 @onready var hurt_timer: Timer = %HurtTimer
 @onready var refuel_timer: Timer = %JetpackRefuelTimer
 @onready var respawn_timer: Timer = %PlayerRespawnTimer
+@onready var knockback_timer: Timer = %KnockbackTimer
+@onready var player_class_instance = Player.new()
+@onready var player_hurtbox: Area2D = %PlayerHurtbox
 
 
 # Player
@@ -127,18 +130,17 @@ func knockback(enemyVelocity: Vector2):
 func _player_movement(player_delta):
 	# Add the gravity.
 	if not is_on_floor():
-			velocity += get_gravity() * player_delta
-			
-	if is_dead == false:
-		#Animations
-		if (velocity.x > 1 || velocity.x < -1):
-			_animations("running")
-		else:
-			_animations("default")
-		
-		if not is_on_floor():
-			_animations("jumping")
+		velocity += get_gravity() * player_delta
+
+	#Animations
+	if (velocity.x > 1 || velocity.x < -1):
+		_animations("running")
+	else:
+		_animations("default")
 	
+	if not is_on_floor():
+		_animations("jumping")
+
 	# Get the input direction and handle the movement/deceleration.
 	player_direction = Input.get_axis("left", "right")
 	
@@ -193,6 +195,7 @@ func _player_movement(player_delta):
 
 # main physics process
 func _physics_process(delta: float) -> void:
+	if is_dead == false:
 		# player movement call
 		_player_movement(delta)
 		
@@ -215,11 +218,19 @@ func _on_hurt_box_knockback(area: Area2D) -> void:
 	if is_hurt: return
 	is_hurt = true
 	is_knockedback = true
+	player_hurtbox.set_collision_mask_value(4, false)
 	knockback(area.get_parent().velocity)
+	_hurt_timer()
+	knockback_timer.start()
+	await knockback_timer.timeout
+	is_knockedback = false
+	is_hurt = false
+	
+func _hurt_timer():
 	hit_flash_anim_player.play("hit_flash")
 	hurt_timer.start()
 	await hurt_timer.timeout
-	is_knockedback = false
 	hit_flash_anim_player.stop()
 	player_sprite.modulate = Color.WHITE
-	is_hurt = false
+	player_hurtbox.set_collision_mask_value(4, true)
+	

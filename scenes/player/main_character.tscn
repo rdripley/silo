@@ -352,7 +352,6 @@ _data = {
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_layer = 2
-collision_mask = 15
 script = ExtResource("1_f0cd4")
 
 [node name="PlayerSprite" type="AnimatedSprite2D" parent="."]
@@ -439,12 +438,15 @@ libraries = {
 
 [node name="HurtTimer" type="Timer" parent="."]
 unique_name_in_owner = true
-wait_time = 0.5
+wait_time = 2.0
 one_shot = true
 
 [node name="PlayerRespawnTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
+
+[node name="KnockbackTimer" type="Timer" parent="."]
+unique_name_in_owner = true
 
 [node name="health_component" type="Node" parent="." node_paths=PackedStringArray("hurt_box")]
 script = ExtResource("10_55fil")
