@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://c8c3parlh5gmv" path="res://assets/jetPack_assets/jetpack_fuel_bar_over_1.png" id="8_ef5tu"]
 [ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="10_55fil"]
 [ext_resource type="Script" uid="uid://j6j62ssymkyx" path="res://scenes/player/follow_cam.gd" id="10_tft1s"]
-[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="11_ex3f7"]
+[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox_component.gd" id="11_ex3f7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_12w03"]
 atlas = ExtResource("2_ef5tu")

@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cs8fpwr38rqno" path="res://assets/animations/Mini Spider Drone (Dying).png" id="2_kvswj"]
 [ext_resource type="Texture2D" uid="uid://u8nkn0x5vaty" path="res://assets/animations/Mini Spider Drone (Running).png" id="3_pfw7c"]
 [ext_resource type="Script" uid="uid://dmggvj1pgxqwd" path="res://scenes/components/health_component.gd" id="5_ics44"]
-[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox.gd" id="6_o63kh"]
+[ext_resource type="Script" uid="uid://bvgrkmsq3wykq" path="res://scenes/components/hurtbox_component.gd" id="6_o63kh"]
 [ext_resource type="Texture2D" uid="uid://nhkodp8aon8i" path="res://assets/jetPack_assets/Black Fuel Bar.png" id="7_doh6e"]
 [ext_resource type="Texture2D" uid="uid://bikk0rhg5ljr6" path="res://assets/jetPack_assets/Green Fuel Bar.png" id="8_sq2t8"]
 
