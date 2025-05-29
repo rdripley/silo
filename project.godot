@@ -25,6 +25,16 @@ window/size/mode=2
 
 project/assembly_name="Silo"
 
+[file_customization]
+
+folder_colors={
+"res://assets/": "orange",
+"res://scenes/components/": "green",
+"res://scenes/enemies/": "red",
+"res://scenes/player/": "yellow",
+"res://scenes/resources/": "purple"
+}
+
 [global_group]
 
 Enemies=""
